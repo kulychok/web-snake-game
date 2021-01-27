@@ -2,6 +2,7 @@ const BOX = 32;
 const NUM_CELLS = { width: 17, height: 15 };
 const BG_OFFSET = { x: BOX, y: 3 * BOX };
 const SCORE_OFFSET = { x: BOX * 2.5, y: BOX * 1.7 };
+const BEST_SCORE_OFFSET = { x: BOX * 16, y: BOX * 1.7 };
 const SNAKE_START = { x: BOX * 9, y: BOX * 10 };
 
 const endGameEvent = new Event('endGame');
@@ -10,6 +11,7 @@ const game = {
   canvas: document.getElementById('game'),
   ctx: null,
   score: 0,
+  bestScore: 0,
   items: [],
   ground: new Image(),
 
@@ -20,6 +22,7 @@ const game = {
   },
 
   run() {
+    
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.ctx.drawImage(this.ground, 0, 0);
     snake.draw(this.ctx);
@@ -29,6 +32,8 @@ const game = {
     }
 
     this.showScore();
+    this.showBestScore();
+    
   },
 
   update() {
@@ -59,10 +64,19 @@ const game = {
     location.reload();
   },
 
-  showScore(e) {
+  showScore() {
     this.ctx.fillStyle = "white";
     this.ctx.font = "50px Arial";
     this.ctx.fillText(this.score, SCORE_OFFSET.x, SCORE_OFFSET.y);
+  },
+
+  showBestScore() {
+    if(this.score > localStorage.getItem('bestScore')) {
+      localStorage.setItem('bestScore', this.score);
+    }
+    this.ctx.fillStyle = "white";
+    this.ctx.font = "50px Arial";
+    this.ctx.fillText(+localStorage.getItem('bestScore'), BEST_SCORE_OFFSET.x, BEST_SCORE_OFFSET.y);
   },
 };
 
@@ -155,18 +169,18 @@ class Item {
     Item.counter++;
     if(game.items.length > 1) game.items.pop();
 
-    if(Item.counter % 3 === 0) {
+    if(!(Item.counter % 3)) {
       game.items.pop();
       game.items.push(new Food);
       return;
     }
 
-    if(Item.counter % 5 === 0) {
+    if(!(Item.counter % 5)) {
       game.items.push(new Mine());
       return;
     }
 
-    if(Item.counter % 13 === 0) {
+    if(!(Item.counter % 13)) {
       game.items.push(new Poison());
       return;
     }
