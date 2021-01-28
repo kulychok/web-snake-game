@@ -22,7 +22,6 @@ const game = {
   },
 
   run() {
-    
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.ctx.drawImage(this.ground, 0, 0);
     snake.draw(this.ctx);
@@ -55,8 +54,9 @@ const game = {
     this.ctx.font = "50px Arial";
     this.ctx.fillText('Game Over', BOX * 6, BOX * 7);
     this.ctx.fillText('Score: ' + this.score, BOX * 7, BOX * 9);
-    this.ctx.fillStyle = "green";
-    this.ctx.fillText('Replay', BOX * 7.5, BOX * 11);
+    this.ctx.fillText('Best score: ' + localStorage.getItem('bestScore'), BOX * 5, BOX * 11);
+    this.ctx.fillStyle = "#295b6d";
+    this.ctx.fillText('Replay', BOX * 7.5, BOX * 13);
     document.addEventListener('click', () => game.replay());
   },
 
@@ -82,7 +82,7 @@ const game = {
 
 const snake = {
   tail: [{ x: 9 * BOX, y: 10 * BOX }],
-  color: 'green',
+  color: '#316b81',
 
   draw(ctx) {
     for (const cell of this.tail) {
