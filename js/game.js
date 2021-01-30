@@ -4,6 +4,7 @@ const BG_OFFSET = { x: BOX, y: 3 * BOX };
 const SCORE_OFFSET = { x: BOX * 2.5, y: BOX * 1.7 };
 const BEST_SCORE_OFFSET = { x: BOX * 16, y: BOX * 1.7 };
 const SNAKE_START = { x: BOX * 9, y: BOX * 10 };
+const config = "config.json";
 
 const endGameEvent = new Event('endGame');
 
@@ -16,12 +17,12 @@ const game = {
   ground: new Image(),
 
   init() {
-    this.ground.src = "img/ground.png";
     this.items.push(new Snack());
     this.setPixelRatio();
   },
 
   run() {
+    
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.ctx.drawImage(this.ground, 0, 0);
     snake.draw(this.ctx);
@@ -82,7 +83,6 @@ const game = {
 
 const snake = {
   tail: [{ x: 9 * BOX, y: 10 * BOX }],
-  color: '#316b81',
 
   draw(ctx) {
     for (const cell of this.tail) {
@@ -202,7 +202,7 @@ class Food extends Item {
 class Snack extends Item {
   constructor() {
     super();
-    this.img.src = "img/food.png";
+    this.img.src = "img/carrot.png";
     this.bonus = 1;
   }
 }
@@ -237,7 +237,24 @@ document.addEventListener("keydown", () => {
     snake.dir = "down";
 });
 
+
+const getGonfig = async (config) => {
+  const response = await fetch(config);
+  const data = await response.json();
+
+  snake.color = data["snakeColor"];
+  game.ground.src = data["imgGround"];
+}
+
+getGonfig(config);
+
 document.addEventListener('endGame', () => game.end());
 
 game.init();
 const gameInterval = setInterval(() => { game.run(); game.update() }, 200);
+ 
+
+
+
+
+
